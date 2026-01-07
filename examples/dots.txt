@@ -1,0 +1,11 @@
+BPM: q = 123
+
+[START]
+
+C4 e
+Bb3 q.
+E4 q
+F4 s.
+F4 e.
+
+[END]
