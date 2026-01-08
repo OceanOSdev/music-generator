@@ -1,5 +1,6 @@
 #include "file_reading/lexer/token.hpp"
 #include "file_reading/parser/node.hpp"
+#include "file_reading/parser/node_kinds.hpp"
 
 namespace FileReading::Parser {
 BpmNode::BpmNode(FileReading::Lexer::Token *token, unsigned int bpm,
