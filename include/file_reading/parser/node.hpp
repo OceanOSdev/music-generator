@@ -3,6 +3,7 @@
 #define NODE_HPP
 
 #include <string>
+#include <vector>
 
 namespace FileReading {
 namespace Lexer {
@@ -109,6 +110,28 @@ public:
   unsigned int bpm() const;
 
   DurationNode *duration() const;
+};
+
+class SongNode : public Node {
+private:
+  BpmNode *_bpm;
+  LabelNode *_start;
+  std::vector<NoteInfoNode *> _notes;
+  LabelNode *_end;
+
+public:
+  SongNode(Lexer::Token *token, BpmNode *bpm, LabelNode *start,
+           std::vector<NoteInfoNode *> notes, LabelNode *end);
+
+  NodeKind kind() const override;
+
+  BpmNode *bpm() const;
+
+  LabelNode *start() const;
+
+  std::vector<NoteInfoNode *> notes() const;
+
+  LabelNode *end() const;
 };
 
 } // namespace Parser
