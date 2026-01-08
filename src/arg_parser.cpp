@@ -23,6 +23,8 @@ Args parse_args(int argc, char *argv[]) {
       std::string_view filename{argv[++i]};
       args.output_file = filename;
       args.output_file_provided = true;
+    } else if (arg == "-l" || arg == "--lex-only") {
+      args.lex_only = true;
     } else {
       throw std::runtime_error("Unknown argument: " + std::string(arg));
     }
@@ -32,8 +34,9 @@ Args parse_args(int argc, char *argv[]) {
 
 std::string get_help() {
   std::stringstream ss;
-  ss << "Usage: music-gen -i <input> -o <output>\n"
+  ss << "Usage: music-gen -i <input> [-o <output>]\n"
      << "\t-i, --input\tInput file\n"
-     << "\t-o, --output\tOutput file\n";
+     << "\t-o, --output\tOutput file\n"
+     << "\t-l, --lex-only\tOnly run lexer\n";
   return ss.str();
 }

@@ -1,0 +1,11 @@
+BPM: q = 123
+
+[START]
+
+A4 e
+Bb5 e. ; super brutal interval \m/
+C#5 s
+D4 s.
+F4 e.
+
+[END]
