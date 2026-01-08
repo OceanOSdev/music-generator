@@ -29,6 +29,8 @@ private:
   char peek_next() const;
   void advance();
 
+  bool _lexing_identifier = false;
+
 public:
   Lexer(std::string_view input);
   std::vector<Token *> lex();
