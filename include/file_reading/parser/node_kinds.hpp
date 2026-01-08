@@ -9,6 +9,7 @@ enum class NodeKind : unsigned int {
   Note,
   Duration,
   Label,
+  Song,
   Eof
 };
 

@@ -32,112 +32,12 @@
       "-Iinclude",
       "-c",
       "-o",
-      "bin/src/arg_parser.o",
-      "src/arg_parser.cpp"
+      "bin/src/file_reading/parser/song_node.o",
+      "src/file_reading/parser/song_node.cpp"
     ],
     "directory": "/home/tmaloney/repos/music-generator",
-    "file": "/home/tmaloney/repos/music-generator/src/arg_parser.cpp",
-    "output": "/home/tmaloney/repos/music-generator/bin/src/arg_parser.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-std=c++20",
-      "-Werror",
-      "-Wall",
-      "-Wextra",
-      "-Wstrict-aliasing",
-      "-pedantic",
-      "-Wunreachable-code",
-      "-Iinclude",
-      "-c",
-      "-o",
-      "bin/src/file_reading/lexer/token.o",
-      "src/file_reading/lexer/token.cpp"
-    ],
-    "directory": "/home/tmaloney/repos/music-generator",
-    "file": "/home/tmaloney/repos/music-generator/src/file_reading/lexer/token.cpp",
-    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/lexer/token.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-std=c++20",
-      "-Werror",
-      "-Wall",
-      "-Wextra",
-      "-Wstrict-aliasing",
-      "-pedantic",
-      "-Wunreachable-code",
-      "-Iinclude",
-      "-c",
-      "-o",
-      "bin/src/file_reading/parser/note_info_node.o",
-      "src/file_reading/parser/note_info_node.cpp"
-    ],
-    "directory": "/home/tmaloney/repos/music-generator",
-    "file": "/home/tmaloney/repos/music-generator/src/file_reading/parser/note_info_node.cpp",
-    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/parser/note_info_node.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-std=c++20",
-      "-Werror",
-      "-Wall",
-      "-Wextra",
-      "-Wstrict-aliasing",
-      "-pedantic",
-      "-Wunreachable-code",
-      "-Iinclude",
-      "-c",
-      "-o",
-      "bin/src/main.o",
-      "src/main.cpp"
-    ],
-    "directory": "/home/tmaloney/repos/music-generator",
-    "file": "/home/tmaloney/repos/music-generator/src/main.cpp",
-    "output": "/home/tmaloney/repos/music-generator/bin/src/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-std=c++20",
-      "-Werror",
-      "-Wall",
-      "-Wextra",
-      "-Wstrict-aliasing",
-      "-pedantic",
-      "-Wunreachable-code",
-      "-Iinclude",
-      "-c",
-      "-o",
-      "bin/src/file_reading/parser/node.o",
-      "src/file_reading/parser/node.cpp"
-    ],
-    "directory": "/home/tmaloney/repos/music-generator",
-    "file": "/home/tmaloney/repos/music-generator/src/file_reading/parser/node.cpp",
-    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/parser/node.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-std=c++20",
-      "-Werror",
-      "-Wall",
-      "-Wextra",
-      "-Wstrict-aliasing",
-      "-pedantic",
-      "-Wunreachable-code",
-      "-Iinclude",
-      "-c",
-      "-o",
-      "bin/src/file_reading/parser/eof_node.o",
-      "src/file_reading/parser/eof_node.cpp"
-    ],
-    "directory": "/home/tmaloney/repos/music-generator",
-    "file": "/home/tmaloney/repos/music-generator/src/file_reading/parser/eof_node.cpp",
-    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/parser/eof_node.o"
+    "file": "/home/tmaloney/repos/music-generator/src/file_reading/parser/song_node.cpp",
+    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/parser/song_node.o"
   },
   {
     "arguments": [
@@ -172,6 +72,126 @@
       "-Iinclude",
       "-c",
       "-o",
+      "bin/src/file_reading/parser/note_info_node.o",
+      "src/file_reading/parser/note_info_node.cpp"
+    ],
+    "directory": "/home/tmaloney/repos/music-generator",
+    "file": "/home/tmaloney/repos/music-generator/src/file_reading/parser/note_info_node.cpp",
+    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/parser/note_info_node.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-Werror",
+      "-Wall",
+      "-Wextra",
+      "-Wstrict-aliasing",
+      "-pedantic",
+      "-Wunreachable-code",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "bin/src/file_reading/parser/eof_node.o",
+      "src/file_reading/parser/eof_node.cpp"
+    ],
+    "directory": "/home/tmaloney/repos/music-generator",
+    "file": "/home/tmaloney/repos/music-generator/src/file_reading/parser/eof_node.cpp",
+    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/parser/eof_node.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-Werror",
+      "-Wall",
+      "-Wextra",
+      "-Wstrict-aliasing",
+      "-pedantic",
+      "-Wunreachable-code",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "bin/src/arg_parser.o",
+      "src/arg_parser.cpp"
+    ],
+    "directory": "/home/tmaloney/repos/music-generator",
+    "file": "/home/tmaloney/repos/music-generator/src/arg_parser.cpp",
+    "output": "/home/tmaloney/repos/music-generator/bin/src/arg_parser.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-Werror",
+      "-Wall",
+      "-Wextra",
+      "-Wstrict-aliasing",
+      "-pedantic",
+      "-Wunreachable-code",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "bin/src/main.o",
+      "src/main.cpp"
+    ],
+    "directory": "/home/tmaloney/repos/music-generator",
+    "file": "/home/tmaloney/repos/music-generator/src/main.cpp",
+    "output": "/home/tmaloney/repos/music-generator/bin/src/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-Werror",
+      "-Wall",
+      "-Wextra",
+      "-Wstrict-aliasing",
+      "-pedantic",
+      "-Wunreachable-code",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "bin/src/file_reading/lexer/token.o",
+      "src/file_reading/lexer/token.cpp"
+    ],
+    "directory": "/home/tmaloney/repos/music-generator",
+    "file": "/home/tmaloney/repos/music-generator/src/file_reading/lexer/token.cpp",
+    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/lexer/token.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-Werror",
+      "-Wall",
+      "-Wextra",
+      "-Wstrict-aliasing",
+      "-pedantic",
+      "-Wunreachable-code",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "bin/src/file_reading/parser/node.o",
+      "src/file_reading/parser/node.cpp"
+    ],
+    "directory": "/home/tmaloney/repos/music-generator",
+    "file": "/home/tmaloney/repos/music-generator/src/file_reading/parser/node.cpp",
+    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/parser/node.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-Werror",
+      "-Wall",
+      "-Wextra",
+      "-Wstrict-aliasing",
+      "-pedantic",
+      "-Wunreachable-code",
+      "-Iinclude",
+      "-c",
+      "-o",
       "bin/src/file_reading/parser/label_node.o",
       "src/file_reading/parser/label_node.cpp"
     ],
@@ -192,12 +212,12 @@
       "-Iinclude",
       "-c",
       "-o",
-      "bin/src/file_reading/parser/bpm_node.o",
-      "src/file_reading/parser/bpm_node.cpp"
+      "bin/src/file_reading/parser/duration_node.o",
+      "src/file_reading/parser/duration_node.cpp"
     ],
     "directory": "/home/tmaloney/repos/music-generator",
-    "file": "/home/tmaloney/repos/music-generator/src/file_reading/parser/bpm_node.cpp",
-    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/parser/bpm_node.o"
+    "file": "/home/tmaloney/repos/music-generator/src/file_reading/parser/duration_node.cpp",
+    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/parser/duration_node.o"
   },
   {
     "arguments": [
@@ -212,11 +232,11 @@
       "-Iinclude",
       "-c",
       "-o",
-      "bin/src/file_reading/parser/duration_node.o",
-      "src/file_reading/parser/duration_node.cpp"
+      "bin/src/file_reading/parser/bpm_node.o",
+      "src/file_reading/parser/bpm_node.cpp"
     ],
     "directory": "/home/tmaloney/repos/music-generator",
-    "file": "/home/tmaloney/repos/music-generator/src/file_reading/parser/duration_node.cpp",
-    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/parser/duration_node.o"
+    "file": "/home/tmaloney/repos/music-generator/src/file_reading/parser/bpm_node.cpp",
+    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/parser/bpm_node.o"
   }
 ]
