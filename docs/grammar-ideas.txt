@@ -3,3 +3,8 @@ BPM = [BPM] [COLON] [DURATION] [DOT]? [EQUAL] [NUMBER]
 IDENT = [LBRACKET] [IDENTIFIER] [RBRACKET]
 
 NOTE = [NOTEID] [ACCIDENTAL]? [NUMBER] [DURATION] [DOT]?
+
+
+============================================================
+
+song = [bpm] [start] [note]+ [end]
