@@ -11,6 +11,7 @@ struct Args {
   bool help = false;
   bool input_file_provided = false;
   bool output_file_provided = false;
+  bool lex_only = false;
 };
 
 Args parse_args(int argc, char *argv[]);

@@ -1,12 +1,14 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "arg_parser.hpp"
 #include "file_reading/lexer/lexer.hpp"
 #include "file_reading/lexer/token.hpp"
 
 std::string read_file_to_string(const std::string &path);
+void log_lexer(std::vector<FileReading::Lexer::Token *> tokens);
 
 int main(int argc, char *argv[]) {
   auto args = parse_args(argc, argv);
@@ -24,8 +26,9 @@ int main(int argc, char *argv[]) {
     auto text = read_file_to_string(std::string(args.input_file));
     auto lexer = new FileReading::Lexer::Lexer(text);
     auto contents = lexer->lex();
-    for (auto content : contents) {
-      std::cout << content->to_string();
+    if (args.lex_only) {
+      log_lexer(contents);
+      return 0;
     }
   } catch (const std::exception &e) {
     // errm... what
@@ -49,4 +52,10 @@ std::string read_file_to_string(const std::string &path) {
   file.read(buffer.data(), size);
 
   return buffer;
+}
+
+void log_lexer(std::vector<FileReading::Lexer::Token *> tokens) {
+  for (auto token : tokens) {
+    std::cout << token->to_string();
+  }
 }
