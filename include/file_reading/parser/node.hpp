@@ -63,18 +63,6 @@ public:
   NodeKind kind() const override;
 };
 
-class BpmNode : public Node {
-private:
-  unsigned int _bpm;
-
-public:
-  BpmNode(Lexer::Token *token, unsigned int bpm);
-
-  NodeKind kind() const override;
-
-  unsigned int bpm() const;
-};
-
 class LabelNode : public Node {
 private:
   std::string _label;
@@ -128,6 +116,21 @@ public:
   NodeKind kind() const override;
 
   NoteNode *note() const;
+
+  DurationNode *duration() const;
+};
+
+class BpmNode : public Node {
+private:
+  unsigned int _bpm;
+  DurationNode *_duration;
+
+public:
+  BpmNode(Lexer::Token *token, unsigned int bpm, DurationNode *duration);
+
+  NodeKind kind() const override;
+
+  unsigned int bpm() const;
 
   DurationNode *duration() const;
 };
