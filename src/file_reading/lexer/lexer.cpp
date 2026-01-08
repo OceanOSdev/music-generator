@@ -41,6 +41,10 @@ Token *Lexer::next_token() {
   if (eof())
     return make_token(TokenKind::Eof, *start, "");
 
+  if (_lexing_identifier) {
+    _lexing_identifier = false;
+    return lex_identifier();
+  }
   const char c = peek();
   switch (c) {
   case ':':
@@ -53,7 +57,12 @@ Token *Lexer::next_token() {
     advance();
     return make_token(TokenKind::Dot, *start, ".");
   case '[':
-    return lex_identifier();
+    _lexing_identifier = true;
+    advance();
+    return make_token(TokenKind::LBracket, *start, "[");
+  case ']':
+    advance();
+    return make_token(TokenKind::RBracket, *start, "]");
   case 'B':
     if (peek_next() == 'P') {
       return lex_bpm();
@@ -110,7 +119,6 @@ Token *Lexer::lex_identifier() {
   if (eof() || peek() != ']') {
     throw std::runtime_error("Unterminated section tag (missing ']')");
   }
-  advance(); // ']'
 
   trim_in_place(name);
 
