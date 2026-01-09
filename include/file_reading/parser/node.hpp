@@ -71,15 +71,19 @@ class NoteNode : public Node {
 private:
   Note _note;
   Accidental _accidental;
+  unsigned int _octave;
 
 public:
-  NoteNode(Lexer::Token *token, Note note, Accidental accidental);
+  NoteNode(Lexer::Token *token, Note note, Accidental accidental,
+           unsigned int octave);
 
   NodeKind kind() const override;
 
   Note note() const;
 
   Accidental accidental() const;
+
+  unsigned int octave() const;
 };
 
 class NoteInfoNode : public Node {
