@@ -1,8 +1,10 @@
-#include "file_reading/parser/parser.hpp"
+#include <iostream>
+
 #include "file_reading/lexer/lexer.hpp"
 #include "file_reading/lexer/token.hpp"
 #include "file_reading/parser/node.hpp"
 #include "file_reading/parser/node_kinds.hpp"
+#include "file_reading/parser/parser.hpp"
 
 namespace FileReading::Parser {
 
@@ -101,6 +103,7 @@ Node *Parser::parse_node() {
   switch (kind) {
   case Lexer::TokenKind::Bpm:
     return parse_bpm_node();
+  case Lexer::TokenKind::Rest:
   case Lexer::TokenKind::NoteId:
     return parse_note_info_node();
   case Lexer::TokenKind::Duration:
@@ -216,7 +219,7 @@ Node *Parser::parse_note_node() {
   unsigned int note_octave = 99;
   auto octave_token = _next();
   if (!match_and_flag(octave_token, err_tok,
-                     FileReading::Lexer::TokenKind::Number)) {
+                      FileReading::Lexer::TokenKind::Number)) {
   } else {
     note_octave = std::atoll(octave_token->lexeme.c_str());
   }
@@ -237,11 +240,19 @@ Node *Parser::parse_note_node() {
 }
 
 Node *Parser::parse_note_info_node() {
-  auto note_node = parse_note_node();
+  Node *note_node = nullptr;
+  FileReading::Lexer::Token *tok = nullptr;
+  if (_peek()->kind != FileReading::Lexer::TokenKind::Rest) {
+    note_node = parse_note_node();
+    tok = note_node->token();
+  } else {
+    auto rest_token = _next();
+    match(rest_token, FileReading::Lexer::TokenKind::Rest);
+    tok = rest_token;
+  }
   auto duration_node = parse_duration_node();
 
-  return new NoteInfoNode(note_node->token(),
-                          dynamic_cast<NoteNode *>(note_node),
+  return new NoteInfoNode(tok, dynamic_cast<NoteNode *>(note_node),
                           dynamic_cast<DurationNode *>(duration_node));
 }
 

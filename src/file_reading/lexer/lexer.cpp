@@ -77,6 +77,9 @@ Token *Lexer::next_token() {
       return lex_bpm();
     }
     return lex_note_id();
+  case 'R':
+    advance();
+    return make_token(TokenKind::Rest, *start, "R");
   case '#':
   case 'b':
     return lex_accidental();

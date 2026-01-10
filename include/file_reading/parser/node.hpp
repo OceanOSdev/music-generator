@@ -90,6 +90,7 @@ class NoteInfoNode : public Node {
 private:
   NoteNode *_note;
   DurationNode *_duration;
+  bool _is_rest;
 
 public:
   NoteInfoNode(Lexer::Token *token, NoteNode *note, DurationNode *duration);
@@ -99,6 +100,8 @@ public:
   NoteNode *note() const;
 
   DurationNode *duration() const;
+
+  bool is_rest() const;
 };
 
 class BpmNode : public Node {

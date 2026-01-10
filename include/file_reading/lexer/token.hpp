@@ -17,6 +17,7 @@ enum class TokenKind : unsigned int {
   Equal,      // =
   LBracket,   // [
   RBracket,   // ]
+  Rest,       // R
   Error,
   Eof
 };
