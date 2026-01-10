@@ -35,7 +35,7 @@ std::vector<Audio::NoteInfo *> NoteInfoAdapter::convert() {
   }
   std::vector<Audio::NoteInfo *> notes{};
   for (auto note : _song->notes()) {
-    auto hertz = note_to_hertz(note->note());
+    auto hertz = note->is_rest() ? 0 : note_to_hertz(note->note());
     auto durr = calculate_duration(duration->duration(),
                                    note->duration()->duration(), bpm);
     notes.push_back(new Audio::NoteInfo(hertz, durr));

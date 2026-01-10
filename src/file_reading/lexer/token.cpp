@@ -28,6 +28,8 @@ std::string token_kind_to_str(TokenKind kind) {
     return "LBRACKET";
   case TokenKind::RBracket:
     return "RBRACKET";
+  case TokenKind::Rest:
+    return "REST";
   case TokenKind::Error:
     return "ERROR";
   case TokenKind::Eof:

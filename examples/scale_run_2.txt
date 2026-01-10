@@ -1,0 +1,16 @@
+BPM: q = 150
+
+[START]
+
+C4 e
+R s
+D4 e
+R s
+E4 s
+F4 s
+G4 e
+A4 e
+B4 e
+C5 q
+
+[END]

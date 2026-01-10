@@ -135,7 +135,10 @@ void log_note(Parser::NoteNode *node, std::string pad) {
 
 void log_note_info(Parser::NoteInfoNode *node, std::string pad) {
   std::cout << pad << "[NoteInfo]" << std::endl;
-  log_node(node->note(), pad + "    ");
+  if (!node->is_rest())
+    log_node(node->note(), pad + "    ");
+  else
+    std::cout << pad << "    " << "Rest" << std::endl;
   log_node(node->duration(), pad + "    ");
 }
 
