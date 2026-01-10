@@ -20,6 +20,8 @@ enum class TokenKind : unsigned int {
   Eof
 };
 
+std::string token_kind_to_str(TokenKind kind);
+
 struct SourceLocation {
   std::size_t line = 1;
   std::size_t col = 1;
