@@ -15,12 +15,12 @@ enum class NodeKind : unsigned int {
 };
 
 enum class DurationKind : unsigned int {
-  Whole = 0,
-  Half = 1,
-  Quarter = 1 << 1,
-  Eighth = 1 << 2,
-  Sixteenth = 1 << 3,
-  ThirtySecond = 1 << 4
+  Whole = 1 << 0,
+  Half = 1 << 1,
+  Quarter = 1 << 2,
+  Eighth = 1 << 3,
+  Sixteenth = 1 << 4,
+  ThirtySecond = 1 << 5
 };
 
 enum class Note : unsigned int {
