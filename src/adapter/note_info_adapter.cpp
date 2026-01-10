@@ -16,7 +16,8 @@ double duration_coeff(FileReading::Parser::DurationKind base,
 double calculate_duration(FileReading::Parser::DurationKind base,
                           FileReading::Parser::DurationKind note_dur,
                           unsigned int bpm, bool dotted = false) {
-  double beat_dur = 1 / static_cast<double>(bpm);
+  double beats_per_sec = static_cast<double>(bpm) / 60;
+  double beat_dur = 1 / beats_per_sec;
   double dur = duration_coeff(base, note_dur) * beat_dur;
   return dotted ? 1.5 * dur : dur;
 }
