@@ -33,9 +33,17 @@ Parser::Parser(std::string_view contents) : _contents(contents) {
   _diagnostics = lexer->diagnostics();
 }
 
-std::vector<std::string> Parser::diagnostics() const { return _diagnostics; }
+ParseResult::ParseResult(SongNode *song, std::vector<Node *> nodes,
+                         std::vector<std::string> diag)
+    : _song_node(song), _nodes(nodes), _diagnostics(diag) {}
 
-bool Parser::error() const { return !_diagnostics.empty(); }
+std::vector<std::string> ParseResult::diagnostics() const {
+  return _diagnostics;
+}
+
+std::vector<Node *> ParseResult::nodes() const { return _nodes; }
+
+bool ParseResult::error() const { return !_diagnostics.empty(); }
 
 FileReading::Lexer::Token *Parser::_peek() const { return _tokens[_idx]; }
 
@@ -48,14 +56,20 @@ FileReading::Lexer::Token *Parser::_next() {
   return tok;
 }
 
-SongNode *Parser::parse() {
+ParseResult *Parser::parse() {
+  if (!_diagnostics.empty()) {
+    return new ParseResult(nullptr, {}, _diagnostics);
+  }
+
   auto bpm = parse_bpm_node();
   auto start = parse_label_node();
   LabelNode *end = nullptr;
+  std::vector<Node *> nodes{bpm, start};
   std::vector<NoteInfoNode *> note_info_nodes{};
   bool eof = false;
   while (!eof) {
     auto node = parse_node();
+    nodes.push_back(node);
     auto kind = node->kind();
     switch (kind) {
     case NodeKind::Label:
@@ -68,14 +82,16 @@ SongNode *Parser::parse() {
       note_info_nodes.push_back(static_cast<NoteInfoNode *>(node));
       break;
     default:
-      // TODO: handle errors
       break;
     }
   }
 
-  return new SongNode(_tokens.front(), dynamic_cast<BpmNode *>(bpm),
-                      dynamic_cast<LabelNode *>(start), note_info_nodes,
-                      dynamic_cast<LabelNode *>(end));
+  auto song_node =
+      new SongNode(_tokens.front(), dynamic_cast<BpmNode *>(bpm),
+                   dynamic_cast<LabelNode *>(start), note_info_nodes,
+                   dynamic_cast<LabelNode *>(end));
+
+  return new ParseResult(song_node, nodes, _diagnostics);
 }
 
 Node *Parser::parse_node() {
@@ -84,7 +100,7 @@ Node *Parser::parse_node() {
   case Lexer::TokenKind::Bpm:
     return parse_bpm_node();
   case Lexer::TokenKind::NoteId:
-    return parse_note_node();
+    return parse_note_info_node();
   case Lexer::TokenKind::Duration:
     return parse_duration_node();
   case Lexer::TokenKind::LBracket:
@@ -94,7 +110,7 @@ Node *Parser::parse_node() {
   case Lexer::TokenKind::Eof:
     return parse_eof_node();
   default:
-    return nullptr;
+    return new ErrorNode(_next()); // TODO: handle error type
   }
 }
 

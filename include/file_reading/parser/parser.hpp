@@ -21,6 +21,25 @@ class DurationNode;
 class NoteNode;
 class NoteInfoNode;
 
+class ParseResult {
+private:
+  SongNode *_song_node;
+  std::vector<Node *> _nodes;
+  std::vector<std::string> _diagnostics;
+
+public:
+  ParseResult(SongNode *song, std::vector<Node *> nodes,
+              std::vector<std::string> diag);
+
+  SongNode *song() const;
+
+  std::vector<Node *> nodes() const;
+
+  std::vector<std::string> diagnostics() const;
+
+  bool error() const;
+};
+
 class Parser {
 private:
   std::string_view _contents;
@@ -54,11 +73,7 @@ private:
 public:
   Parser(std::string_view contents);
 
-  SongNode *parse();
-
-  bool error() const;
-
-  std::vector<std::string> diagnostics() const;
+  ParseResult *parse();
 };
 
 } // namespace Parser
