@@ -9,6 +9,7 @@
 
 std::string read_file_to_string(const std::string &path);
 void log_lexer(std::vector<FileReading::Lexer::Token *> tokens);
+void log_diagnostics(std::vector<std::string> diagnostics);
 
 int main(int argc, char *argv[]) {
   auto args = parse_args(argc, argv);
@@ -22,18 +23,16 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  try {
-    auto text = read_file_to_string(std::string(args.input_file));
-    auto lexer = new FileReading::Lexer::Lexer(text);
-    auto contents = lexer->lex();
-    if (args.lex_only) {
-      log_lexer(contents);
-      return 0;
-    }
-  } catch (const std::exception &e) {
-    // errm... what
-    std::cerr << "errrm" << std::endl;
-    std::cerr << e.what() << std::endl;
+  auto text = read_file_to_string(std::string(args.input_file));
+  auto lexer = new FileReading::Lexer::Lexer(text);
+  auto contents = lexer->lex();
+  if (lexer->error()) {
+    log_diagnostics(lexer->diagnostics());
+    return 1;
+  }
+  if (args.lex_only) {
+    log_lexer(contents);
+    return 0;
   }
 
   return 0;
@@ -57,5 +56,11 @@ std::string read_file_to_string(const std::string &path) {
 void log_lexer(std::vector<FileReading::Lexer::Token *> tokens) {
   for (auto token : tokens) {
     std::cout << token->to_string();
+  }
+}
+
+void log_diagnostics(std::vector<std::string> diagnostics) {
+  for (auto diag : diagnostics) {
+    std::cerr << diag << std::endl;
   }
 }
