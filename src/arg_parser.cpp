@@ -25,6 +25,8 @@ Args parse_args(int argc, char *argv[]) {
       args.output_file_provided = true;
     } else if (arg == "-l" || arg == "--lex-only") {
       args.lex_only = true;
+    } else if (arg == "-p" || arg == "--parse-only") {
+      args.parse_only = true;
     } else {
       throw std::runtime_error("Unknown argument: " + std::string(arg));
     }
@@ -37,6 +39,7 @@ std::string get_help() {
   ss << "Usage: music-gen -i <input> [-o <output>]\n"
      << "\t-i, --input\tInput file\n"
      << "\t-o, --output\tOutput file\n"
-     << "\t-l, --lex-only\tOnly run lexer\n";
+     << "\t-l, --lex-only\tOnly run lexer\n"
+     << "\t-p, --parse-only\tOnly run parser\n";
   return ss.str();
 }
