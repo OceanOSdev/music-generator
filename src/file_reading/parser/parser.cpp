@@ -45,6 +45,8 @@ std::vector<Node *> ParseResult::nodes() const { return _nodes; }
 
 bool ParseResult::error() const { return !_diagnostics.empty(); }
 
+SongNode *ParseResult::song() const { return _song_node; }
+
 FileReading::Lexer::Token *Parser::_peek() const { return _tokens[_idx]; }
 
 FileReading::Lexer::Token *Parser::_next() {
@@ -213,7 +215,7 @@ Node *Parser::parse_note_node() {
 
   unsigned int note_octave = 99;
   auto octave_token = _next();
-  if (match_and_flag(octave_token, err_tok,
+  if (!match_and_flag(octave_token, err_tok,
                      FileReading::Lexer::TokenKind::Number)) {
   } else {
     note_octave = std::atoll(octave_token->lexeme.c_str());
