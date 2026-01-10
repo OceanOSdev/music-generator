@@ -5,10 +5,11 @@
 
 #include "arg_parser.hpp"
 #include "file_reading/lexer/lexer.hpp"
-#include "file_reading/lexer/token.hpp"
+#include "file_reading/logging/node_printer.hpp"
+#include "file_reading/logging/token_printer.hpp"
+#include "file_reading/parser/parser.hpp"
 
 std::string read_file_to_string(const std::string &path);
-void log_lexer(std::vector<FileReading::Lexer::Token *> tokens);
 void log_diagnostics(std::vector<std::string> diagnostics);
 
 int main(int argc, char *argv[]) {
@@ -24,14 +25,24 @@ int main(int argc, char *argv[]) {
   }
 
   auto text = read_file_to_string(std::string(args.input_file));
-  auto lexer = new FileReading::Lexer::Lexer(text);
-  auto contents = lexer->lex();
-  if (lexer->error()) {
-    log_diagnostics(lexer->diagnostics());
-    return 1;
-  }
   if (args.lex_only) {
-    log_lexer(contents);
+    auto lexer = new FileReading::Lexer::Lexer(text);
+    auto contents = lexer->lex();
+    if (lexer->error()) {
+      log_diagnostics(lexer->diagnostics());
+      return 1;
+    }
+    FileReading::Logging::log_tokens(contents);
+    return 0;
+  }
+  if (args.parse_only) {
+    auto parser = new FileReading::Parser::Parser(text);
+    auto result = parser->parse();
+    if (result->error()) {
+      log_diagnostics(result->diagnostics());
+      return 1;
+    }
+    FileReading::Logging::log_nodes(result->nodes());
     return 0;
   }
 
@@ -51,12 +62,6 @@ std::string read_file_to_string(const std::string &path) {
   file.read(buffer.data(), size);
 
   return buffer;
-}
-
-void log_lexer(std::vector<FileReading::Lexer::Token *> tokens) {
-  for (auto token : tokens) {
-    std::cout << token->to_string();
-  }
 }
 
 void log_diagnostics(std::vector<std::string> diagnostics) {
