@@ -113,7 +113,7 @@ std::vector<std::int16_t> encode_melody(const std::vector<NoteInfo *> &notes,
   const int fade_samples = std::max(0, static_cast<int>(fade_s * sr));
 
   std::vector<std::int16_t> out;
-  out.reserve(1'000'000); // cheap guiess; not required
+  out.reserve(1'000'000); // cheap guess; not required
 
   constexpr double tau = 2.0 * std::numbers::pi;
 
