@@ -12,32 +12,12 @@
       "-Iinclude",
       "-c",
       "-o",
-      "bin/src/file_reading/lexer/token.o",
-      "src/file_reading/lexer/token.cpp"
+      "bin/src/main.o",
+      "src/main.cpp"
     ],
     "directory": "/home/tmaloney/repos/music-generator",
-    "file": "/home/tmaloney/repos/music-generator/src/file_reading/lexer/token.cpp",
-    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/lexer/token.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang++",
-      "-std=c++20",
-      "-Werror",
-      "-Wall",
-      "-Wextra",
-      "-Wstrict-aliasing",
-      "-pedantic",
-      "-Wunreachable-code",
-      "-Iinclude",
-      "-c",
-      "-o",
-      "bin/src/arg_parser.o",
-      "src/arg_parser.cpp"
-    ],
-    "directory": "/home/tmaloney/repos/music-generator",
-    "file": "/home/tmaloney/repos/music-generator/src/arg_parser.cpp",
-    "output": "/home/tmaloney/repos/music-generator/bin/src/arg_parser.o"
+    "file": "/home/tmaloney/repos/music-generator/src/main.cpp",
+    "output": "/home/tmaloney/repos/music-generator/bin/src/main.o"
   },
   {
     "arguments": [
@@ -72,11 +52,31 @@
       "-Iinclude",
       "-c",
       "-o",
-      "bin/src/main.o",
-      "src/main.cpp"
+      "bin/src/arg_parser.o",
+      "src/arg_parser.cpp"
     ],
     "directory": "/home/tmaloney/repos/music-generator",
-    "file": "/home/tmaloney/repos/music-generator/src/main.cpp",
-    "output": "/home/tmaloney/repos/music-generator/bin/src/main.o"
+    "file": "/home/tmaloney/repos/music-generator/src/arg_parser.cpp",
+    "output": "/home/tmaloney/repos/music-generator/bin/src/arg_parser.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-Werror",
+      "-Wall",
+      "-Wextra",
+      "-Wstrict-aliasing",
+      "-pedantic",
+      "-Wunreachable-code",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "bin/src/file_reading/lexer/token.o",
+      "src/file_reading/lexer/token.cpp"
+    ],
+    "directory": "/home/tmaloney/repos/music-generator",
+    "file": "/home/tmaloney/repos/music-generator/src/file_reading/lexer/token.cpp",
+    "output": "/home/tmaloney/repos/music-generator/bin/src/file_reading/lexer/token.o"
   }
 ]

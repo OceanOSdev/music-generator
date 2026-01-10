@@ -17,8 +17,11 @@ enum class TokenKind : unsigned int {
   Equal,      // =
   LBracket,   // [
   RBracket,   // ]
+  Error,
   Eof
 };
+
+std::string token_kind_to_str(TokenKind kind);
 
 struct SourceLocation {
   std::size_t line = 1;

@@ -14,6 +14,7 @@ private:
   std::string_view _input;
   std::size_t _i = 0;
   SourceLocation *_loc;
+  std::vector<std::string> _diagnostics;
   void eat_whitespace();
   Token *next_token();
   Token *lex_bpm();
@@ -29,9 +30,13 @@ private:
   char peek_next() const;
   void advance();
 
+  bool _lexing_identifier = false;
+
 public:
   Lexer(std::string_view input);
   std::vector<Token *> lex();
+  std::vector<std::string> diagnostics() const;
+  bool error() const;
 };
 
 } // namespace FileReading::Lexer
