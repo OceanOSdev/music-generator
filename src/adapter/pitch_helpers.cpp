@@ -1,6 +1,5 @@
 #include "adapter/pitch_helpers.hpp"
 
-
 namespace Adapter {
 
 /// Given a [Note] note (assumed to be in the fourth octave)
@@ -18,4 +17,4 @@ Note get_freq(Note note, unsigned int octave) {
   unsigned int multi = 1 << (octave - 4);
   return note * multi;
 }
-}
+} // namespace Adapter
