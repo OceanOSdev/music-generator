@@ -216,16 +216,16 @@ Node *Parser::parse_note_node() {
   auto note_token = _next();
   match_and_flag(note_token, err_tok, FileReading::Lexer::TokenKind::NoteId);
 
+  FileReading::Lexer::Token *accidental_token = nullptr;
+  if (_peek()->kind == FileReading::Lexer::TokenKind::Accidental) {
+    accidental_token = _next();
+  }
   unsigned int note_octave = 99;
   auto octave_token = _next();
   if (!match_and_flag(octave_token, err_tok,
                       FileReading::Lexer::TokenKind::Number)) {
   } else {
     note_octave = std::atoll(octave_token->lexeme.c_str());
-  }
-  FileReading::Lexer::Token *accidental_token = nullptr;
-  if (_peek()->kind == FileReading::Lexer::TokenKind::Accidental) {
-    accidental_token = _next();
   }
 
   if (err_tok != nullptr) {
