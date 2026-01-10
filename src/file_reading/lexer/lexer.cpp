@@ -2,11 +2,16 @@
 #include "file_reading/lexer/token.hpp"
 #include <set>
 #include <sstream>
-#include <stdexcept>
 
 namespace FileReading::Lexer {
 Token *make_token(TokenKind kind, SourceLocation loc, std::string lexeme);
 void trim_in_place(std::string &s);
+std::string error_unexpected_identifier(char expected, char actual,
+                                        SourceLocation loc);
+
+std::string error_unexpected_eof(char expected, SourceLocation loc);
+std::string error_unexpected_identifier(char id, SourceLocation loc);
+std::string report_error(std::string error, SourceLocation loc);
 
 Lexer::Lexer(std::string_view input)
     : _input(input), _loc(new SourceLocation()) {}
@@ -20,6 +25,10 @@ char Lexer::peek_next() const {
     return _input[_i];
   return _input[_i + 1];
 }
+
+bool Lexer::error() const { return !_diagnostics.empty(); }
+
+std::vector<std::string> Lexer::diagnostics() const { return _diagnostics; }
 
 std::vector<Token *> Lexer::lex() {
   std::vector<Token *> lexemes;
@@ -79,11 +88,9 @@ Token *Lexer::next_token() {
       return lex_note_id_or_duration();
     }
 
-    std::string letter = std::string{c};
-    std::stringstream ss;
-    ss << "Unexpected identifier: '" << c << "' at (" << _loc->line << ", "
-       << _loc->col << ")";
-    throw std::runtime_error(ss.str());
+    _diagnostics.push_back(error_unexpected_identifier(c, *start));
+    advance();
+    return make_token(TokenKind::Error, *start, std::string{c});
   }
 
   return nullptr;
@@ -98,7 +105,9 @@ Token *Lexer::lex_bpm() {
   advance(); // P
   char M = peek();
   if (M != 'M') {
-    throw std::runtime_error("Expected 'M' in lexing BPM");
+    _diagnostics.push_back(error_unexpected_identifier('M', M, *start));
+    advance();
+    return make_token(TokenKind::Error, *start, lexeme);
   }
   lexeme.push_back(M);
   advance(); // M
@@ -116,11 +125,17 @@ Token *Lexer::lex_identifier() {
     advance();
   }
 
-  if (eof() || peek() != ']') {
-    throw std::runtime_error("Unterminated section tag (missing ']')");
-  }
-
   trim_in_place(name);
+
+  if (eof() || peek() != ']') {
+    if (eof()) {
+      _diagnostics.push_back(error_unexpected_eof(']', *start));
+    } else {
+      _diagnostics.push_back(error_unexpected_identifier(']', peek(), *start));
+    }
+
+    return make_token(TokenKind::Error, *start, name);
+  }
 
   return make_token(TokenKind::Identifier, *start,
                     std::string(_input.substr(begin, _i - begin)));
@@ -143,9 +158,9 @@ Token *Lexer::lex_duration() {
   char dur = peek();
   std::string lexeme = std::string{peek()};
   if (!durations.contains(dur)) {
-    std::stringstream ss;
-    ss << "Unknown duration '" << dur << "'" << std::endl;
-    throw std::runtime_error(ss.str());
+    _diagnostics.push_back(error_unexpected_identifier(dur, *start));
+    advance();
+    return make_token(TokenKind::Error, *start, lexeme);
   }
   advance();
   return make_token(TokenKind::Duration, *start, lexeme);
@@ -158,7 +173,9 @@ Token *Lexer::lex_note_id() {
   char note = peek();
   std::string lexeme = std::string{peek()};
   if (note < 'A' || note > 'G') {
-    throw std::runtime_error("Invalid note: " + lexeme);
+    advance();
+    _diagnostics.push_back(error_unexpected_identifier(note, *start));
+    return make_token(TokenKind::Error, *start, lexeme);
   }
   advance();
   return make_token(TokenKind::NoteId, *start, lexeme);
@@ -223,5 +240,27 @@ void trim_in_place(std::string &s) {
     s.erase(s.begin());
   while (!s.empty() && is_ws(static_cast<unsigned char>(s.back())))
     s.pop_back();
+}
+
+std::string error_unexpected_identifier(char id, SourceLocation loc) {
+  auto message = "Unexpected identifier '" + std::string{id} + "'";
+  return report_error(message, loc);
+}
+
+std::string error_unexpected_identifier(char expected, char actual,
+                                        SourceLocation loc) {
+  auto expected_str = std::string{expected};
+  auto actual_str = std::string{actual};
+  auto message = "Expected '" + expected_str + "' but got '" + actual_str + "'";
+  return report_error(message, loc);
+}
+
+std::string error_unexpected_eof(char expected, SourceLocation loc) {
+  auto message = "Expected '" + std::string{expected} + "' but got End of File";
+  return report_error(message, loc);
+}
+
+std::string report_error(std::string error, SourceLocation loc) {
+  return "Error: " + error + " at " + loc.to_string();
 }
 } // namespace FileReading::Lexer
