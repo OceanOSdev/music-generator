@@ -8,7 +8,9 @@
 namespace FileReading {
 namespace Lexer {
 struct Token;
-}
+struct SourceLocation;
+enum class TokenKind : unsigned int;
+} // namespace Lexer
 namespace Parser {
 class Node;
 class SongNode;
@@ -25,21 +27,38 @@ private:
   std::vector<Lexer::Token *> _tokens;
   std::size_t _idx = 0;
 
+  std::vector<std::string> _diagnostics;
+
   FileReading::Lexer::Token *_peek() const;
   FileReading::Lexer::Token *_next();
 
   Node *parse_node();
-  LabelNode *parse_label_node();
-  BpmNode *parse_bpm_node();
-  EofNode *parse_eof_node();
-  DurationNode *parse_duration_node();
-  NoteNode *parse_note_node();
-  NoteInfoNode *parse_note_info_node();
+  Node *parse_label_node();
+  Node *parse_bpm_node();
+  Node *parse_eof_node();
+  Node *parse_duration_node();
+  Node *parse_note_node();
+  Node *parse_note_info_node();
+
+  bool match(FileReading::Lexer::Token *token,
+             FileReading::Lexer::TokenKind expected);
+  bool match_and_flag(FileReading::Lexer::Token *token,
+                      FileReading::Lexer::Token *&err_tok,
+                      FileReading::Lexer::TokenKind expected);
+  void report_error(std::string message,
+                    FileReading::Lexer::SourceLocation loc);
+  void report_unexpected_token(FileReading::Lexer::TokenKind expected,
+                               FileReading::Lexer::TokenKind actual,
+                               FileReading::Lexer::SourceLocation loc);
 
 public:
   Parser(std::string_view contents);
 
   SongNode *parse();
+
+  bool error() const;
+
+  std::vector<std::string> diagnostics() const;
 };
 
 } // namespace Parser

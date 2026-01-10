@@ -138,6 +138,13 @@ public:
   LabelNode *end() const;
 };
 
+class ErrorNode : public Node {
+public:
+  ErrorNode(Lexer::Token *token);
+
+  NodeKind kind() const override;
+};
+
 } // namespace Parser
 } // namespace FileReading
 

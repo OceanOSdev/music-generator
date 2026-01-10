@@ -1,12 +1,8 @@
-#include <limits>
-#include <sstream>
-#include <stdexcept>
-
+#include "file_reading/parser/parser.hpp"
 #include "file_reading/lexer/lexer.hpp"
 #include "file_reading/lexer/token.hpp"
 #include "file_reading/parser/node.hpp"
 #include "file_reading/parser/node_kinds.hpp"
-#include "file_reading/parser/parser.hpp"
 
 namespace FileReading::Parser {
 
@@ -25,16 +21,21 @@ DurationKind dur_from_char(char c) {
   case 't':
     return DurationKind::ThirtySecond;
   default:
-    std::stringstream ss;
-    ss << "unknown duration kind: '" << c << "'" << std::endl;
-    throw std::runtime_error(ss.str());
+    // this can't actually happen, gets caught in the
+    // lexer, so just return a random one.
+    return DurationKind::Whole;
   }
 }
 
 Parser::Parser(std::string_view contents) : _contents(contents) {
   auto const lexer = new FileReading::Lexer::Lexer(contents);
   _tokens = lexer->lex();
+  _diagnostics = lexer->diagnostics();
 }
+
+std::vector<std::string> Parser::diagnostics() const { return _diagnostics; }
+
+bool Parser::error() const { return !_diagnostics.empty(); }
 
 FileReading::Lexer::Token *Parser::_peek() const { return _tokens[_idx]; }
 
@@ -47,45 +48,122 @@ FileReading::Lexer::Token *Parser::_next() {
   return tok;
 }
 
-SongNode *Parser::parse() { return nullptr; }
+SongNode *Parser::parse() {
+  auto bpm = parse_bpm_node();
+  auto start = parse_label_node();
+  LabelNode *end = nullptr;
+  std::vector<NoteInfoNode *> note_info_nodes{};
+  bool eof = false;
+  while (!eof) {
+    auto node = parse_node();
+    auto kind = node->kind();
+    switch (kind) {
+    case NodeKind::Label:
+      end = static_cast<LabelNode *>(node);
+      break;
+    case NodeKind::Eof:
+      eof = true;
+      break;
+    case NodeKind::Note_Info:
+      note_info_nodes.push_back(static_cast<NoteInfoNode *>(node));
+      break;
+    default:
+      // TODO: handle errors
+      break;
+    }
+  }
 
-Node *Parser::parse_node() { return nullptr; }
+  return new SongNode(_tokens.front(), dynamic_cast<BpmNode *>(bpm),
+                      dynamic_cast<LabelNode *>(start), note_info_nodes,
+                      dynamic_cast<LabelNode *>(end));
+}
 
-LabelNode *Parser::parse_label_node() {
-  _next();
+Node *Parser::parse_node() {
+  auto kind = _peek()->kind;
+  switch (kind) {
+  case Lexer::TokenKind::Bpm:
+    return parse_bpm_node();
+  case Lexer::TokenKind::NoteId:
+    return parse_note_node();
+  case Lexer::TokenKind::Duration:
+    return parse_duration_node();
+  case Lexer::TokenKind::LBracket:
+    return parse_label_node();
+  case Lexer::TokenKind::Error:
+    return new ErrorNode(_next()); // TODO: handle error type
+  case Lexer::TokenKind::Eof:
+    return parse_eof_node();
+  default:
+    return nullptr;
+  }
+}
+
+Node *Parser::parse_label_node() {
+  FileReading::Lexer::Token *err_tok = nullptr;
+
+  auto l_bracket_token = _next();
+  match_and_flag(l_bracket_token, err_tok,
+                 FileReading::Lexer::TokenKind::LBracket);
 
   auto id_token = _next();
+  match_and_flag(id_token, err_tok, FileReading::Lexer::TokenKind::Identifier);
 
-  _next();
+  auto r_bracket_token = _next();
+  match_and_flag(r_bracket_token, err_tok,
+                 FileReading::Lexer::TokenKind::RBracket);
+
+  if (err_tok != nullptr)
+    return new ErrorNode(err_tok);
 
   return new LabelNode(id_token, id_token->lexeme);
 }
 
-BpmNode *Parser::parse_bpm_node() {
+Node *Parser::parse_bpm_node() {
+  FileReading::Lexer::Token *err_tok = nullptr;
+
   auto bpm_token = _next();
-  _next(); // ':'
+  match_and_flag(bpm_token, err_tok, FileReading::Lexer::TokenKind::Bpm);
+
+  auto colon_token = _next(); // ':'
+  match_and_flag(colon_token, err_tok, FileReading::Lexer::TokenKind::Colon);
 
   auto duration_node = parse_duration_node();
+  if (duration_node->kind() == NodeKind::Error) {
+    // do something
+  }
 
-  _next(); // '='
+  auto eq_token = _next(); // '='
+  match_and_flag(eq_token, err_tok, FileReading::Lexer::TokenKind::Equal);
 
   auto bpm_number_token = _next();
+  match_and_flag(bpm_number_token, err_tok,
+                 FileReading::Lexer::TokenKind::Number);
+
+  if (err_tok != nullptr)
+    return new ErrorNode(err_tok);
 
   return new BpmNode(bpm_token, std::atoll(bpm_number_token->lexeme.c_str()),
-                     duration_node);
+                     dynamic_cast<DurationNode *>(duration_node));
 }
 
-EofNode *Parser::parse_eof_node() {
+Node *Parser::parse_eof_node() {
   auto token = _next();
   return new EofNode(token);
 }
 
-DurationNode *Parser::parse_duration_node() {
+Node *Parser::parse_duration_node() {
+  FileReading::Lexer::Token *err_tok = nullptr;
+
   auto duration_token = _next();
+  match_and_flag(duration_token, err_tok,
+                 FileReading::Lexer::TokenKind::Duration);
   FileReading::Lexer::Token *dot_token = nullptr;
   if (_peek()->kind == FileReading::Lexer::TokenKind::Dot) {
     dot_token = _next();
   }
+
+  if (err_tok != nullptr)
+    return new ErrorNode(err_tok);
 
   return new DurationNode(duration_token,
                           dur_from_char(duration_token->lexeme[0]),
@@ -93,12 +171,6 @@ DurationNode *Parser::parse_duration_node() {
 }
 
 Note note_from_char(char c) {
-  if (c < 'A' || c > 'G') {
-    std::stringstream ss;
-    ss << "unknown note kind: '" << c << "'" << std::endl;
-    throw std::runtime_error(ss.str());
-  }
-
   if (c == 'A')
     return Note::A;
 
@@ -117,28 +189,78 @@ Accidental accidental_from_char(char c) {
   }
 }
 
-NoteNode *Parser::parse_note_node() {
+Node *Parser::parse_note_node() {
+  FileReading::Lexer::Token *err_tok = nullptr;
+
   auto note_token = _next();
+  match_and_flag(note_token, err_tok, FileReading::Lexer::TokenKind::NoteId);
+
+  unsigned int note_octave = 99;
   auto octave_token = _next();
+  if (match_and_flag(octave_token, err_tok,
+                     FileReading::Lexer::TokenKind::Number)) {
+  } else {
+    note_octave = std::atoll(octave_token->lexeme.c_str());
+  }
   FileReading::Lexer::Token *accidental_token = nullptr;
   if (_peek()->kind == FileReading::Lexer::TokenKind::Accidental) {
     accidental_token = _next();
+  }
+
+  if (err_tok != nullptr) {
+    return new ErrorNode(err_tok);
   }
 
   auto accidental = accidental_token != nullptr
                         ? accidental_from_char(accidental_token->lexeme[0])
                         : FileReading::Parser::Accidental::None;
   auto note_letter = note_from_char(note_token->lexeme[0]);
-  auto note_octave = std::atoll(octave_token->lexeme.c_str());
   return new NoteNode(note_token, note_letter, accidental, note_octave);
 }
 
-NoteInfoNode *Parser::parse_note_info_node() {
-  auto token = _peek();
+Node *Parser::parse_note_info_node() {
   auto note_node = parse_note_node();
   auto duration_node = parse_duration_node();
 
-  return new NoteInfoNode(token, note_node, duration_node);
+  return new NoteInfoNode(note_node->token(),
+                          dynamic_cast<NoteNode *>(note_node),
+                          dynamic_cast<DurationNode *>(duration_node));
+}
+
+bool Parser::match(FileReading::Lexer::Token *token,
+                   FileReading::Lexer::TokenKind expected) {
+
+  if (token->kind != expected) {
+    report_unexpected_token(expected, token->kind, token->loc);
+    return false;
+  }
+
+  return true;
+}
+
+bool Parser::match_and_flag(FileReading::Lexer::Token *token,
+                            FileReading::Lexer::Token *&err_tok,
+                            FileReading::Lexer::TokenKind expected) {
+  auto matches = match(token, expected);
+  if (!matches) {
+    err_tok = token;
+  }
+  return matches;
+}
+
+void Parser::report_error(std::string message,
+                          FileReading::Lexer::SourceLocation loc) {
+  _diagnostics.push_back("Error: " + message + " at " + loc.to_string());
+}
+
+void Parser::report_unexpected_token(FileReading::Lexer::TokenKind expected,
+                                     FileReading::Lexer::TokenKind actual,
+                                     FileReading::Lexer::SourceLocation loc) {
+  auto expected_tok = FileReading::Lexer::token_kind_to_str(expected);
+  auto actual_tok = FileReading::Lexer::token_kind_to_str(actual);
+  auto message = "Unexpected token [" + actual_tok + "], (expected [" +
+                 expected_tok + "])";
+  report_error(message, loc);
 }
 
 } // namespace FileReading::Parser
