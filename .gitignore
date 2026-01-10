@@ -45,3 +45,6 @@
 
 # executable
 music-gen
+
+#compile commands
+compile_commands.json
