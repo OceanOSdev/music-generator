@@ -17,13 +17,13 @@ constexpr std::uint16_t kBlockAlign = static_cast<std::uint16_t>(
     kChannels * kBytesPerSample); // bytes per audio frame
 constexpr std::uint32_t kByteRate = kSampleRate * kBlockAlign;
 
-void write_bytes(std::ostream &os, const void *data, std::size_t n) {
+inline void write_bytes(std::ostream &os, const void *data, std::size_t n) {
   os.write(static_cast<const char *>(data), static_cast<std::streamsize>(n));
   if (!os)
     throw std::runtime_error("I/O error while writing WAV");
 }
 
-void write_u16_le(std::ostream &os, std::uint16_t v) {
+inline void write_u16_le(std::ostream &os, std::uint16_t v) {
   const std::array<std::uint8_t, 2> b{
       static_cast<std::uint8_t>(v & 0xFFu),
       static_cast<std::uint8_t>((v >> 8) & 0xFFu),
@@ -32,7 +32,7 @@ void write_u16_le(std::ostream &os, std::uint16_t v) {
   write_bytes(os, b.data(), b.size());
 }
 
-void write_u32_le(std::ostream &os, std::uint32_t v) {
+inline void write_u32_le(std::ostream &os, std::uint32_t v) {
   const std::array<std::uint8_t, 4> b{
       static_cast<std::uint8_t>(v & 0xFFu),
       static_cast<std::uint8_t>((v >> 8) & 0xFFu),
@@ -43,12 +43,13 @@ void write_u32_le(std::ostream &os, std::uint32_t v) {
   write_bytes(os, b.data(), b.size());
 }
 
-void write_tag(std::ostream &os, const char (&tag)[5]) {
+inline void write_tag(std::ostream &os, const char (&tag)[5]) {
   // 4 ASCII bytes, e.g. "RIFF", "WAVE", "fmt ", "data"
   write_bytes(os, tag, 4);
 }
 
-void write_pcm16_mono_header(std::ostream &os, std::uint32_t num_samples) {
+inline void write_pcm16_mono_header(std::ostream &os,
+                                    std::uint32_t num_samples) {
   // "data" chunk size is the number of bytes of sample payload.
   // mono PCM16 => 2 bytes per sample.
   const std::uint32_t data_bytes = num_samples * kBlockAlign;
