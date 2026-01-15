@@ -1,0 +1,65 @@
+BPM: q = 225 
+
+[START]
+
+E2 e
+E2 e
+E3 e
+E2 e
+E2 e
+D3 e
+E2 e
+E2 e
+C3 e
+E2 e
+E2 e
+A#2 e
+E2 e
+E2 e
+B2 e
+C3 e
+
+E2 e
+E2 e
+E3 e
+E2 e
+E2 e
+D3 e
+E2 e
+E2 e
+C3 e
+E2 e
+E2 e
+A#2 h
+
+E2 e
+E2 e
+E3 e
+E2 e
+E2 e
+D3 e
+E2 e
+E2 e
+C3 e
+E2 e
+E2 e
+A#2 e
+E2 e
+E2 e
+B2 e
+C3 e
+
+E2 e
+E2 e
+E3 e
+E2 e
+E2 e
+D3 e
+E2 e
+E2 e
+C3 e
+E2 e
+E2 e
+A#2 h
+
+[END]
