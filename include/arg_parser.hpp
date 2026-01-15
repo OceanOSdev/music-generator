@@ -13,6 +13,7 @@ struct Args {
   bool output_file_provided = false;
   bool lex_only = false;
   bool parse_only = false;
+  double amplitude = 0.25;
 };
 
 Args parse_args(int argc, char *argv[]);

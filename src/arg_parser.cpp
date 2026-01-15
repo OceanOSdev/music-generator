@@ -1,6 +1,8 @@
-#include "arg_parser.hpp"
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
+
+#include "arg_parser.hpp"
 
 Args parse_args(int argc, char *argv[]) {
   Args args{};
@@ -27,6 +29,18 @@ Args parse_args(int argc, char *argv[]) {
       args.lex_only = true;
     } else if (arg == "-p" || arg == "--parse-only") {
       args.parse_only = true;
+    } else if (arg == "-a" || arg == "--amplitude") {
+      if (i == argc - 1) {
+        throw std::runtime_error("amplitude specified but not provided");
+      }
+      std::string amp{argv[++i]};
+      try {
+        double amplitude = std::stod(amp);
+        args.amplitude = amplitude;
+      } catch (const std::exception &e) {
+        std::cerr << "Couldn't parse amplitude. Defaulting to 0.25"
+                  << std::endl;
+      }
     } else {
       throw std::runtime_error("Unknown argument: " + std::string(arg));
     }

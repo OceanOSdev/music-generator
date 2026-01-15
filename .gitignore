@@ -46,5 +46,8 @@
 # executable
 music-gen
 
-#compile commands
+# compile commands
 compile_commands.json
+
+# wavs
+*.wav

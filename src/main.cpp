@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
   }
 
   auto adapter = new Adapter::NoteInfoAdapter(result->song());
-  auto samples = Audio::encode_melody(adapter->convert());
+  auto samples = Audio::encode_melody(adapter->convert(), args.amplitude);
   Audio::write_pcm16_mono_wav(std::string{args.output_file}, samples);
 
   std::cout << "Wrote " << args.output_file << " (" << samples.size()
